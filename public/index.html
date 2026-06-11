@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Система за грешки</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚠️ Система за грешки</div>
+    <nav>
+      <button class="tab-btn active" data-tab="add">➕ Добави грешка</button>
+      <button class="tab-btn" data-tab="list">📋 Списък</button>
+      <button class="tab-btn" data-tab="stats">📊 Статистики</button>
+      <button class="tab-btn" data-tab="workers">👷 Работници</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ── TAB: ADD ───────────────────────────────────────────────── -->
+    <section id="tab-add" class="tab active">
+      <h2>Добави нова грешка</h2>
+      <form id="error-form" class="card form-grid">
+
+        <div class="field">
+          <label>Дата на грешката *</label>
+          <input type="date" id="f-date" required />
+        </div>
+
+        <div class="field">
+          <label>Вид на грешката *</label>
+          <input type="text" id="f-type" placeholder="напр. Бракувана продукция" required />
+        </div>
+
+        <div class="field">
+          <label>Стойност (лв.)</label>
+          <input type="number" id="f-value" min="0" step="0.01" placeholder="0.00" />
+        </div>
+
+        <div class="field">
+          <label>Направена от *</label>
+          <div class="input-combo">
+            <select id="f-worker-select">
+              <option value="">-- изберете --</option>
+            </select>
+            <span>или въведете:</span>
+            <input type="text" id="f-worker-new" placeholder="ново име" />
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Описание – какво точно се е случило *</label>
+          <textarea id="f-desc" rows="3" placeholder="Опишете подробно грешката..." required></textarea>
+        </div>
+
+        <div class="field full">
+          <label>Забележка – как да не се допуска отново</label>
+          <textarea id="f-note" rows="2" placeholder="Превантивна мярка..."></textarea>
+        </div>
+
+        <div class="field full actions">
+          <button type="submit" class="btn primary">Запиши грешката</button>
+          <span id="form-msg"></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── TAB: LIST ──────────────────────────────────────────────── -->
+    <section id="tab-list" class="tab">
+      <h2>Списък с грешки</h2>
+      <div class="card filters">
+        <div class="filter-row">
+          <label>От:</label>
+          <input type="date" id="l-from" />
+          <label>До:</label>
+          <input type="date" id="l-to" />
+          <label>Работник:</label>
+          <select id="l-worker">
+            <option value="all">Всички</option>
+          </select>
+          <button class="btn secondary" onclick="loadErrors()">🔍 Филтрирай</button>
+          <button class="btn ghost" onclick="clearFilters()">✖ Изчисти</button>
+        </div>
+      </div>
+      <div id="errors-table-wrap">
+        <p class="empty">Зареждане...</p>
+      </div>
+    </section>
+
+    <!-- ── TAB: STATS ─────────────────────────────────────────────── -->
+    <section id="tab-stats" class="tab">
+      <h2>Статистики</h2>
+      <div class="card filters">
+        <div class="filter-row">
+          <label>От:</label>
+          <input type="date" id="s-from" />
+          <label>До:</label>
+          <input type="date" id="s-to" />
+          <label>Работник:</label>
+          <select id="s-worker">
+            <option value="all">Всички</option>
+          </select>
+          <button class="btn secondary" onclick="loadStats()">🔍 Обнови</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="card stat-card">
+          <div class="stat-label">Общо грешки</div>
+          <div class="stat-value" id="st-total">—</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Обща стойност</div>
+          <div class="stat-value" id="st-value">—</div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="card">
+          <h3>По вид грешка</h3>
+          <div id="chart-type"></div>
+        </div>
+        <div class="card">
+          <h3>По работник</h3>
+          <div id="chart-worker"></div>
+        </div>
+        <div class="card wide">
+          <h3>По месец</h3>
+          <div id="chart-month"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB: WORKERS ───────────────────────────────────────────── -->
+    <section id="tab-workers" class="tab">
+      <h2>Управление на работници</h2>
+      <div class="card" style="max-width:480px">
+        <div class="field">
+          <label>Добави работник</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="w-name" placeholder="Иван Иванов" style="flex:1" />
+            <button class="btn primary" onclick="addWorker()">Добави</button>
+          </div>
+          <span id="w-msg" style="font-size:13px;margin-top:4px;display:block"></span>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>Регистрирани работници</h3>
+        <ul id="workers-list" class="workers-list"></ul>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
