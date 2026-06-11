@@ -22,6 +22,10 @@ function fmt(num) {
   return Number(num).toLocaleString('bg-BG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+function fmtEur(num) {
+  return '€ ' + fmt(num);
+}
+
 function today() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -121,7 +125,7 @@ async function loadErrors() {
             <td>${i + 1}</td>
             <td>${r.error_date ? r.error_date.slice(0,10) : ''}</td>
             <td><span class="badge">${escape(r.error_type)}</span></td>
-            <td>${fmt(r.error_value)} лв.</td>
+            <td>${fmtEur(r.error_value)}</td>
             <td>${escape(r.worker)}</td>
             <td>
               <button class="btn ghost" onclick="toggleDetail(${r.id})">▼ Виж</button>
@@ -180,11 +184,11 @@ async function loadStats() {
   try {
     const data = await api('/api/stats?' + params);
     document.getElementById('st-total').textContent = data.summary.total;
-    document.getElementById('st-value').textContent = fmt(data.summary.total_value) + ' лв.';
+    document.getElementById('st-value').textContent = fmtEur(data.summary.total_value);
 
-    renderBars('chart-type',   data.byType,   r => r.error_type, r => r.cnt, r => `${r.cnt} бр. / ${fmt(r.val)} лв.`);
-    renderBars('chart-worker', data.byWorker, r => r.worker,     r => r.cnt, r => `${r.cnt} бр. / ${fmt(r.val)} лв.`);
-    renderBars('chart-month',  data.byMonth,  r => r.month,      r => r.cnt, r => `${r.cnt} бр. / ${fmt(r.val)} лв.`);
+    renderBars('chart-type',   data.byType,   r => r.error_type, r => r.cnt, r => `${r.cnt} бр. / ${fmtEur(r.val)}`);
+    renderBars('chart-worker', data.byWorker, r => r.worker,     r => r.cnt, r => `${r.cnt} бр. / ${fmtEur(r.val)}`);
+    renderBars('chart-month',  data.byMonth,  r => r.month,      r => r.cnt, r => `${r.cnt} бр. / ${fmtEur(r.val)}`);
   } catch (err) {
     console.error(err);
   }
